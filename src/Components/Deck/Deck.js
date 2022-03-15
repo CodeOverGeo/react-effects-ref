@@ -52,7 +52,7 @@ const Deck = () => {
     return setDrawCard((draw) => !draw);
   }
 
-  function getDeck(drawn) {
+  function GetDeck(drawn) {
     return drawn.map((c) => <Card key={c.id} name={c.name} image={c.image} />);
   }
 
@@ -63,7 +63,7 @@ const Deck = () => {
           Draw Card
         </button>
       ) : null}
-      {getDeck(drawn)}
+      {GetDeck(drawn)}
     </div>
   );
 };

@@ -1,12 +1,16 @@
 import './App.css';
 import Deck from '../Deck/Deck';
-import Autodeck from '../Deck/Autodeck';
+import Autodeck from '../Autodeck/Autodeck';
 
 function App() {
   return (
     <div>
-      <Deck />
-      <Autodeck />
+      <div>
+        <Deck />
+      </div>
+      <div>
+        <Autodeck />
+      </div>
     </div>
   );
 }

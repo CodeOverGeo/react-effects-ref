@@ -8,6 +8,7 @@ const Autodeck = () => {
   const [deck, setDeck] = useState(null);
   const [drawn, setDrawn] = useState([]);
   const [drawCard, setDrawCard] = useState(false);
+  const timerRef = useRef(null);
 
   useEffect(() => {
     async function getData() {
@@ -23,8 +24,9 @@ const Autodeck = () => {
 
       try {
         let drawRes = await axios.get(`${API_BASE_URL}/${deck_id}/draw`);
-        console.log(`drawRes: ${drawRes}`);
+
         if (drawRes.data.remaining === 0) {
+          setDrawCard(false);
           throw new Error('no cards remaining');
         }
 
@@ -42,17 +44,24 @@ const Autodeck = () => {
         alert(err);
       }
     }
-    if (drawCard) {
-      getCard();
-      toggleDrawCard();
+    if (drawCard && !timerRef.current) {
+      timerRef.current = setInterval(async () => {
+        await getCard();
+      }, 1000);
     }
+
+    // Use the reference point for the created interval to clear once all cards have been drawn
+    return () => {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    };
   }, [drawCard, setDrawCard, deck]);
 
   function toggleDrawCard() {
     return setDrawCard((draw) => !draw);
   }
 
-  function getDeck(drawn) {
+  function GetDeck(drawn) {
     return drawn.map((c) => <Card key={c.id} name={c.name} image={c.image} />);
   }
 
@@ -60,10 +69,10 @@ const Autodeck = () => {
     <div>
       {deck ? (
         <button className="Deck-btn" onClick={toggleDrawCard}>
-          Draw Card
+          {drawCard ? 'STOP' : 'KEEP'} DRAWING
         </button>
       ) : null}
-      {getDeck(drawn)}
+      {GetDeck(drawn)}
     </div>
   );
 };
